@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32S3 实时图像</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        #image-container {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #camera-image {
+            max-width: 100%;
+            max-height: 500px;
+        }
+        
+        #status {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .no-image {
+            color: #999;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>ESP32S3 相机实时图像</h1>
+    
+    <div id="image-container">
+        <p class="no-image">等待图像上传...</p>
+    </div>
+    
+    <p id="status">最后更新: 暂无</p>
+    
+    <script>
+        // 检查最新图片的频率(毫秒)
+        const refreshInterval = 2000;
+        
+        // 记录最后一张图片的信息
+        let lastImageTimestamp = null;
+        
+        // 检查是否有新图片
+        function checkForNewImage() {
+            fetch('/latest')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('尚未上传图片');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 如果是新图片，则更新显示
+                    if (data.timestamp !== lastImageTimestamp) {
+                        lastImageTimestamp = data.timestamp;
+                        updateImage(data.url);
+                        
+                        // 更新状态信息
+                        const date = new Date();
+                        document.getElementById('status').textContent = 
+                            `最后更新: ${date.toLocaleTimeString()}`;
+                    }
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                });
+        }
+        
+        // 更新图片显示
+        function updateImage(imageUrl) {
+            const container = document.getElementById('image-container');
+            
+            // 清除现有内容
+            container.innerHTML = '';
+            
+            // 创建图片元素
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.id = 'camera-image';
+            img.alt = 'ESP32S3 相机图像';
+            
+            // 添加到容器
+            container.appendChild(img);
+        }
+        
+        // 页面加载后开始检查新图片
+        window.onload = function() {
+            // 立即检查一次
+            checkForNewImage();
+            
+            // 设置定期检查
+            setInterval(checkForNewImage, refreshInterval);
+        };
+    </script>
+</body>
+</html>
