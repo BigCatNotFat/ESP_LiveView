@@ -202,19 +202,31 @@ app.run(host='0.0.0.0', port=5000, debug=True)
 pip install requests pillow
 
 ### 测试服务器连接
-python test_client.py --server http://你的服务器IP:5002
+python test.py --server http://你的服务器IP:5002
 
 ### 上传图片(二进制方式)
-python test_client.py --server http://你的服务器IP:5002 --mode upload --image test.jpg
+python test.py --server http://你的服务器IP:5002 --mode upload --image test.jpg
+python test.py --server http://20.255.62.23:5002 --mode upload-base64 --image t1.png
 
 ### 上传图片(Base64方式)
-python test_client.py --server http://你的服务器IP:5002 --mode upload-base64 --image test.jpg
+python test.py --server http://你的服务器IP:5002 --mode upload-base64 --image test.jpg
 
 ### 获取最新图片信息
-python test_client.py --server http://你的服务器IP:5002 --mode get-latest
+python test.py --server http://你的服务器IP:5002 --mode get-latest
 
 ### 下载并显示最新图片
-python test_client.py --server http://你的服务器IP:5002 --mode download
+python test.py --server http://你的服务器IP:5002 --mode download
 
 ### 模拟ESP32S3定时上传(每5秒上传一次，共上传10次)
-python test_client.py --server http://你的服务器IP:5002 --mode simulate --image test.jpg --interval 5 --count 10
+python test.py --server http://你的服务器IP:5002 --mode simulate --image test.jpg --interval 5 --count 10
+
+python test_client_video.py --server http://你的服务器IP:5002 --video test.mp4
+
+# 更快的间隔 - 每0.5秒提取一帧
+python test_client_video.py --server http://你的服务器IP:5002 --video test.mp4 --interval 0.5
+
+# 实时模式 - 按照视频的实际速度上传
+python test_client_video.py --server http://你的服务器IP:5002 --video test.mp4 --interval 1.0 --realtime
+
+# 长时间测试 - 处理一个长视频，可以按Ctrl+C随时停止
+python test_client_video.py --server http://你的服务器IP:5002 --video long_test.mp4
