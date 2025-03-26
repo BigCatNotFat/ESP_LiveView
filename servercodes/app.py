@@ -91,4 +91,4 @@ def get_image(filename):
 if __name__ == '__main__':
     # 在生产环境中，您应该使用适当的WSGI服务器如Gunicorn
     # 这里使用Flask的开发服务器并监听所有网络接口
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)

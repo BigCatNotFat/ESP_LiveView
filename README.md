@@ -197,5 +197,24 @@ if not allowed_file(image_file.filename):
 app.run(host='0.0.0.0', port=5000, debug=True)
 ```
 `debug=True`启用热重载和详细错误页面，便于开发。在生产环境中应禁用此选项。
+# 测试脚本
+### 安装必要的依赖
+pip install requests pillow
 
-这个Flask应用虽然结构简单，但体现了Web后端的核心概念：路由管理、请求处理、文件操作、状态管理、错误处理和API设计。它为ESP32S3提供了一个稳定的图像接收端点，同时为浏览器客户端提供了实时查看图像的接口。
+### 测试服务器连接
+python test_client.py --server http://你的服务器IP:5002
+
+### 上传图片(二进制方式)
+python test_client.py --server http://你的服务器IP:5002 --mode upload --image test.jpg
+
+### 上传图片(Base64方式)
+python test_client.py --server http://你的服务器IP:5002 --mode upload-base64 --image test.jpg
+
+### 获取最新图片信息
+python test_client.py --server http://你的服务器IP:5002 --mode get-latest
+
+### 下载并显示最新图片
+python test_client.py --server http://你的服务器IP:5002 --mode download
+
+### 模拟ESP32S3定时上传(每5秒上传一次，共上传10次)
+python test_client.py --server http://你的服务器IP:5002 --mode simulate --image test.jpg --interval 5 --count 10
